@@ -725,6 +725,8 @@ def postProcessImages(imageURLs, imageModifiers, keywords, timestr, filePrefix):
     # save the combined image
     newFileName = "history/" + filePrefix + timestr + "-image" + ".png"
     new_im.save(newFileName)
+    
+    # Maybe Upload to S3
 
     return newFileName
 

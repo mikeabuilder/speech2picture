@@ -1,1 +1,53 @@
 things I've done 
+
+Using S3...
+    IN AWS web site
+        Create an acount in AWS if you do not have one.
+        
+        In AWS console, search for "manage Access Keys" and set up a new accesskey/secret access key pair. These will be used by the speech2picture program to get write access.
+        
+        Is S3, create a new "bucket" for storing the pictures
+            set up with no blocking permissions.
+            
+            Add a specific permission for downloading
+                select bucket, then permissions, then add 
+    
+    Set up credentials in the hose device (RPi) environment variables with:
+    
+        In Linux, a bash script can set the environemtn variables
+    
+
+    For windows, running a .cmd file with these commnds will add the environment variables permanently
+        setx AWS_ACCESS_KEY_ID "access keyt goes here "
+        setx AWS_SECRET_ACCESS_KEY "secret access key goes here"
+        setx AWS_DEFAULT_REGION "us-west-2"    
+
+
+
+Changes - Created a file called s3_and_qr.py which contains a function called 
+
+    upload_to_s3_and_generate_qr    
+        input prameters are 
+        file_path    The path to the file to be uploaded.
+        bucket_name  the name of the S3 bucket . 
+        
+            buckets I've defined 
+                "amzn-s3-speech2picture"     root bucket and location for users pictures to go
+                "amzn-s3-speech2picture/idleDisplayFiles" storage location for idleDisplay files
+
+        The function uses AWS keys stored in environment variables named:
+            AWS_ACCESS_KEY_ID       "AWS access key"
+            AWS_SECRET_ACCESS_KEY   "AWS secret access key"
+            AWS_DEFAULT_REGION      "us-west-2"
+
+        Function uploads the named file to the named S3 bucket, then creates a QRcode.jpg to the S3 location 
+        and stores this file to the same location as the file.
+
+
+        The function returns "success" if successful, or "failed"  if something went wrong.
+
+
+If the file containing the function is run stand-alone, it looks for files engine in "-image.png" located in the addToIdleDisplayFIles directory and stores each
+file in S3, creates a QR core with the same prefix, but ending in "-S3_URL.jpg". Both the image file and the QR code file are stored in the idleDisplayFiles folder.
+
+    
