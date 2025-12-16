@@ -286,6 +286,9 @@ class g_args:
     # if true, then save files that are generated in the process - mostly a debug feature
     isSaveFiles = False
 
+    # if true, then use S3 to store user images and pop a QR code to allow download of displayed images
+    useS3 = True
+
 
 
 # global window variables
