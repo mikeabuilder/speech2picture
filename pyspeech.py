@@ -872,8 +872,8 @@ def create_main_window(usingHardwareButton):
         labelQRForImage = tk.Label(gw.windowMain)
         
         # The label will be dimensioned when the image is loaded
-        labelQRForImage.configure(bg="#09E3FB", highlightcolor="#f4ff55", 
-                                    highlightthickness=10,)
+        labelQRForImage.configure(bg="#02FBE2")#, highlightcolor="#f4ff55", 
+                                    #highlightthickness=10,)
     
 
     
@@ -1123,14 +1123,14 @@ def display_image(image_path, label=None, labelQR = None):
 
     #update QR label
     if labelQR and not skip_QR:  # AND S3 store enabled
-        QRFile = image_path.replace("-image.png", '-s3_url.jpg')
+        QRFile = image_path#.replace("-image.png", '-s3_url.jpg')
         if os.path.exists(QRFile):
             print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
             #QR_resize = .1    # user 10% of full image space for the QR code
             #QR_size = int( QR_resize * min(new_width, new_height))
             #print (f"QR SIZE TARGET {QR_size}")
-            #QRimg.resize((50, 50), Image.NEAREST)
+            QRimg.resize((50, 50), Image.NEAREST)
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
