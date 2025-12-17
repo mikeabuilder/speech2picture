@@ -1123,7 +1123,7 @@ def display_image(image_path, label=None, labelQR = None):
 
     #update QR label
     if labelQR and not skip_QR:  # AND S3 store enabled
-        QRFile = image_path#.replace("-image.png", '-s3_url.jpg')
+        QRFile = image_path.replace("-image.png", '-s3_url.jpg')
         if os.path.exists(QRFile):
             print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
@@ -1135,9 +1135,11 @@ def display_image(image_path, label=None, labelQR = None):
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = photoImage)
-            label.image = QR_photo
+            labelQR.image = QR_photo  # keep a reference to prevent garbage collection
+
+
             update_main_window()
-    else: print ("Skipped QRfile imale stuff in display_image")
+    else: print ("Skipped QRfile image stuff in display_image")
 
 
     return label
@@ -1498,8 +1500,8 @@ def main():
         os.makedirs("errors")
     if not os.path.exists("idleDisplayFiles"):
         os.makedirs("idleDisplayFiles")
-    if not os.path.exists("addToIdleDiaplayFiles"):
-        os.makedirs("addToIdleDiaplayFiles")
+    if not os.path.exists("addToIdleDisplayFiles"):
+        os.makedirs("addToIdleDisplayFiles")
 
     # read configuration file
     if os.path.exists('s2pconfig.json'):
