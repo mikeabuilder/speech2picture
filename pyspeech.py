@@ -1127,10 +1127,10 @@ def display_image(image_path, label=None, labelQR = None):
         if os.path.exists(QRFile):
             print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
-            #QR_resize = .1    # user 10% of full image space for the QR code
-            #QR_size = int( QR_resize * min(new_width, new_height))
-            #print (f"QR SIZE TARGET {QR_size}")
-            QRimg.resize((50, 50), Image.NEAREST)
+            QR_resize = .1    # user 10% of full image space for the QR code
+            QR_size = int( QR_resize * min(new_width, new_height))
+            print (f"QR SIZE TARGET {QR_size}")
+            QRimg.resize((QR_size, QR_size), Image.NEAREST)
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
@@ -1148,6 +1148,7 @@ def display_random_history_image(labelForImageDisplay, labelQRForImage = None):
     '''
     display a random image from the idleDisplayFiles in the window using the label object
     '''
+    if labelQRForImage == None: print ("mike - QR label argument not passed!")
     # static variable to hold last time an image was displayed
     if not hasattr(display_random_history_image, "lastImageDisplayedTime"):
         display_random_history_image.lastImageDisplayedTime = 0  # it doesn't exist yet, so initialize it
@@ -1625,7 +1626,7 @@ def main():
                         randomDisplayMode = True 
 
                     if randomDisplayMode:
-                        display_random_history_image(labelForImageDisplay,labelQRForImage)
+                        display_random_history_image(labelForImageDisplay, labelQRForImage)
 
                     update_main_window()
 
