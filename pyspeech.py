@@ -882,12 +882,14 @@ def create_main_window(usingHardwareButton):
  
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
-    labelQRForImage.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
+    labelInstructionForDownload( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
+    #labelQRForImage.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
     labelQRText.grid(     row=1, column=3,               padx=(10,0),  pady=10, sticky=tk.W)
     labelCreditsText.grid(row=2, column=1, columnspan=4, padx=0,       pady=10, sticky=tk.W)
     buttonQuit.grid(      row=3, column=2, columnspan=3, padx=0,       pady=20, sticky=tk.E)
     labelCommandHint.grid(row=4, column=0, columnspan=3, padx=10,      pady=10, sticky=tk.W)
+
 
     if usingHardwareButton:
         # remove button from the window
