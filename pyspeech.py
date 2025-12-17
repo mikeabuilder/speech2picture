@@ -860,7 +860,7 @@ def create_main_window(usingHardwareButton):
                                 highlightthickness=10,) 
     
     # add a label for the S3_QR code
-    labelQRForImage = tk.Label(gw.windowMain, text="QR CODE FOR DOWNLOAD GOES HERE" ,
+    labelInstructionForDownload = tk.Label(gw.windowMain, text=5*"\n"+"Scan to download" ,
                      font=("Helvetica", 24),
                      justify=tk.CENTER,
                      wraplength=300,
