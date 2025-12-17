@@ -1128,10 +1128,12 @@ def display_image(image_path, label=None, labelQR = None):
         if os.path.exists(QRFile):
             print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
-            QR_resize = .1    # user 10% of full image space for the QR code
+            QR_resize = .05    # user 10% of full image space for the QR code
             QR_size = int( QR_resize * min(new_width, new_height))
+            print (f"QR_image size before resize {QRimg.width}")
             print (f"QR SIZE TARGET {QR_size}")
             QRimg.resize((QR_size, QR_size), Image.NEAREST)
+            print (f"QR_image size after resize {QRimg.width}")
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
