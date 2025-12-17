@@ -859,18 +859,30 @@ def create_main_window(usingHardwareButton):
     labelForImage.configure(bg='#000000', highlightcolor="#f4ff55", 
                                 highlightthickness=10,) 
     
+    # add a label for the S3_QR code
+    labelQRForImage = tk.Label(gw.windowMain, text="QR CODE FOR DOWNLOAD GOES HERE" ,
+                     font=("Helvetica", 30),
+                     justify=tk.CENTER,
+                     wraplength=30,
+                     bg="#FC015D",
+                     fg='#FFFFFF',
+                     )
+    #if gw.useS3:
+
+    
     # set up the grid
-    gw.windowMain.grid_columnconfigure(0, weight=99, minsize=0)
-    gw.windowMain.grid_columnconfigure(1, weight=99, minsize=10)
-    gw.windowMain.grid_columnconfigure(2, weight=2,  minsize=100)
-    gw.windowMain.grid_columnconfigure(3, weight=2,  minsize=100)
-    gw.windowMain.grid_columnconfigure(4, weight=99, minsize=10)
+    gw.windowMain.grid_columnconfigure(0, weight=99, minsize=0)     # left of image - boarder space
+    gw.windowMain.grid_columnconfigure(1, weight=99, minsize=10)    # left of image
+    gw.windowMain.grid_columnconfigure(2, weight=2,  minsize=100)   # left of image
+    gw.windowMain.grid_columnconfigure(3, weight=2,  minsize=100)   # left of image
+    gw.windowMain.grid_columnconfigure(4, weight=99, minsize=10)    # 
     gw.windowMain.grid_columnconfigure(5, weight=99, minsize=10)
     gw.windowMain.grid_columnconfigure(6, weight=1)
     gw.windowMain.grid_columnconfigure(7, weight=99, minsize=10)
-
+ 
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
+    labelQRForImage.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
     labelQRText.grid(     row=1, column=3,               padx=(10,0),  pady=10, sticky=tk.W)
     labelCreditsText.grid(row=2, column=1, columnspan=4, padx=0,       pady=10, sticky=tk.W)
@@ -1141,6 +1153,7 @@ def parseCommandLineArgs():
     parser.add_argument("-i", "--image", help="use image from file", type=str, default=0) # optional argument
     parser.add_argument("-o", "--onlykeywords", help="use audio directly without extracting keywords", action="store_true") # optional argument
     parser.add_argument("-g", "--gokiosk", help="jump into Kiosk mode", action="store_true") # optional argument
+    parser.add_argument("-g", "--no_s3", help = "don't try to store image files to AWS S3", action="store_true")
     args = parser.parse_args()
 
     # set the debug level
@@ -1195,6 +1208,9 @@ def parseCommandLineArgs():
         rtn.isSaveFiles = False
         if args.savefiles:
             rtn.isSaveFiles = True
+
+        if args.no_s3:
+            rtn.useS3 = False
 
     return rtn
 
@@ -1449,6 +1465,8 @@ def main():
         os.makedirs("errors")
     if not os.path.exists("idleDisplayFiles"):
         os.makedirs("idleDisplayFiles")
+    if not os.path.exists("addToIdleDiaplayFiles"):
+        os.makedirs("addToIdleDiaplayFiles")
 
     # read configuration file
     if os.path.exists('s2pconfig.json'):
