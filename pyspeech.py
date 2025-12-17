@@ -1134,7 +1134,7 @@ def display_image(image_path, label=None, labelQR = None):
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
-            labelQR.configure(image = photoImage)
+            labelQR.configure(image = QR_photo)
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
 
