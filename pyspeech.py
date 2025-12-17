@@ -861,18 +861,20 @@ def create_main_window(usingHardwareButton):
     
     # add a instructions and label for the S3_QR code
     if True:   # gw.useS3:
-        labelInstructionForDownload = tk.Label(gw.windowMain, text=8*"\n"+"Scan to download" ,
-                        font=("Helvetica", 13),
+        '''labelInstructionForDownload = tk.Label(gw.windowMain, text=10*"\n"+"Scan to download" ,
+                        font=("Helvetica", 2),
                         justify=tk.CENTER,
                         wraplength=300,
-                        bg="#FC015D",
-                        fg='#FFFFFF',
-                        )
+                        bg="#FFFFFF00",
+                        fg='#000000',
+                        )'''
+        labelInstructionForDownload = tk.Label(gw.windowMain)
+        
         # add a label to display the images
         labelQRForImage = tk.Label(gw.windowMain)
         
         # The label will be dimensioned when the image is loaded
-        labelQRForImage.configure(bg="#02FBE2")#, highlightcolor="#ff001e", 
+        labelQRForImage.configure(bg="#FFFFFF")#, highlightcolor="#ff001e", 
                                     #highlightthickness=10,)
     
 
@@ -915,7 +917,7 @@ def create_main_window(usingHardwareButton):
 
     update_main_window()
 
-    return labelForImage, labelQRForImage
+    return labelForImage, labelQRForImage, labelInstructionForDownload
    
 
 def update_main_window():
@@ -1080,7 +1082,7 @@ def display_text_in_message_window(message=None, labelToUse=None):
     gw.windowForMessages.update()
 
 
-def display_image(image_path, label=None, labelQR = None):
+def display_image(image_path, label=None, labelQR = None, label_inst = None):
     '''
     display an image in the window using the label object
     '''
@@ -1126,19 +1128,22 @@ def display_image(image_path, label=None, labelQR = None):
     if labelQR and not skip_QR:  # AND S3 store enabled
         QRFile = image_path.replace("-image.png", '-s3_url.jpg')
         if os.path.exists(QRFile):
-            print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
             QR_resize = .15    # user 10% of full image space for the QR code
             QR_size = int( QR_resize * min(new_width, new_height))
-            print (f"QR_image size before resize {QRimg.width}")
-            print (f"QR SIZE TARGET {QR_size}")
             QRimg = QRimg.resize((QR_size, QR_size), Image.NEAREST)
-            print (f"QR_image size after resize {QRimg.width}")
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
+
+            inst_img = Image.open("download_instructions.jpg")
+            inst_img = inst_img.resize(QR_size, QR_size), Image.NEAREST)
+            inst_photo = ImageTk.PhotoImage(inst_img)
+            label_inst.configure(image = inst_photo)
+            label_inst.image = inst_photo
+
 
 
             update_main_window()
@@ -1147,7 +1152,7 @@ def display_image(image_path, label=None, labelQR = None):
 
     return label
 
-def display_random_history_image(labelForImageDisplay, labelQRForImage = None):
+def display_random_history_image(labelForImageDisplay, labelQRForImage = None, labelInstructionForDownload = None):
     '''
     display a random image from the idleDisplayFiles in the window using the label object
     '''
@@ -1170,7 +1175,7 @@ def display_random_history_image(labelForImageDisplay, labelQRForImage = None):
                 #add to the list
                 imagesToDisplay.append(file)
         random.shuffle(imagesToDisplay) # randomize the list
-        display_image(idleDisplayFolder + "/" + imagesToDisplay[0], labelForImageDisplay, labelQRForImage)
+        display_image(idleDisplayFolder + "/" + imagesToDisplay[0], labelForImageDisplay, labelQRForImage, labelInstructionForDownload)
         
         update_main_window()
 
@@ -1470,7 +1475,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
         logger.info("Displaying image...")
 
         try:
-            display_image(newImageFileName, labelForImageDisplay, labelQRForImage)
+            display_image(newImageFileName, labelForImageDisplay, labelQRForImage, labelInstructionForDownload)
             display_text_in_message_window() # Hide the message window
         except Exception as e:
             logger.error("Error displaying image: " + newImageFileName, exc_info=True)
@@ -1532,7 +1537,7 @@ def main():
     # create the main window
     labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
 
-    display_random_history_image(labelForImageDisplay, labelQRForImage) # display a random image
+    display_random_history_image(labelForImageDisplay, labelQRForImage, labelInstructionForDownload) # display a random image
 
     # create the message window
     labelForMessageDisplay = create_message_window()
@@ -1556,7 +1561,7 @@ def main():
 
     lastCommandTime = 0
 
-    display_random_history_image(labelForImageDisplay, labelQRForImage)
+    display_random_history_image(labelForImageDisplay, labelQRForImage, labelInstructionForDownload)
 
     while not gw.isQuitting:
 
@@ -1629,7 +1634,7 @@ def main():
                         randomDisplayMode = True 
 
                     if randomDisplayMode:
-                        display_random_history_image(labelForImageDisplay, labelQRForImage)
+                        display_random_history_image(labelForImageDisplay, labelQRForImage, labelInstructionForDownload)
 
                     update_main_window()
 
@@ -1659,7 +1664,7 @@ def main():
                             randomDisplayMode = True 
                             
                     if randomDisplayMode:
-                        display_random_history_image(labelForImageDisplay, labelQRForImage)
+                        display_random_history_image(labelForImageDisplay, labelQRForImage, labelInstructionForDownload)
 
 
         if settings.isAudioKeywords: 
