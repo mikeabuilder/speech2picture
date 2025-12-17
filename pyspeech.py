@@ -1112,7 +1112,7 @@ def display_image(image_path, label=None, labelQR = None):
         label.image = photoImage  # Keep a reference to the image to prevent it from being garbage collected
 
         update_main_window()
-        skip_QR = True
+        skip_QR = False
 
     except Exception as e:
         print("Error with image file: " + image_path)
@@ -1125,17 +1125,19 @@ def display_image(image_path, label=None, labelQR = None):
     if labelQR and not skip_QR:  # AND S3 store enabled
         QRFile = image_path.replace("-image.png", '-s3_url.jpg')
         if os.path.exists(QRFile):
+            print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
-            QR_resize = .1    # user 10% of full image space for the QR code
-            QR_size = int( QR_resize * min(new_width, new_height))
-            print (f"QR SIZE TARGET {QR_size}")
-            QRimg.resize((50, 50), Image.NEAREST)
+            #QR_resize = .1    # user 10% of full image space for the QR code
+            #QR_size = int( QR_resize * min(new_width, new_height))
+            #print (f"QR SIZE TARGET {QR_size}")
+            #QRimg.resize((50, 50), Image.NEAREST)
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = photoImage)
             label.image = QR_photo
             update_main_window()
+    else: print ()"Skipped QRfile imale stuff in display_image")
 
 
     return label
