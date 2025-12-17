@@ -1137,7 +1137,7 @@ def display_image(image_path, label=None, labelQR = None):
             labelQR.configure(image = photoImage)
             label.image = QR_photo
             update_main_window()
-    else: print ()"Skipped QRfile imale stuff in display_image")
+    else: print ("Skipped QRfile imale stuff in display_image")
 
 
     return label
