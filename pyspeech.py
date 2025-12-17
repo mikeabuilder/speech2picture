@@ -861,8 +861,8 @@ def create_main_window(usingHardwareButton):
     
     # add a instructions and label for the S3_QR code
     if True:   # gw.useS3:
-        labelInstructionForDownload = tk.Label(gw.windowMain, text=6*"\n"+"Scan to download" ,
-                        font=("Helvetica", 16),
+        labelInstructionForDownload = tk.Label(gw.windowMain, text=8*"\n"+"Scan to download" ,
+                        font=("Helvetica", 13),
                         justify=tk.CENTER,
                         wraplength=300,
                         bg="#FC015D",
