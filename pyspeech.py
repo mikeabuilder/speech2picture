@@ -1535,7 +1535,7 @@ def main():
     settings = parseCommandLineArgs() # get the command line arguments
  
     # create the main window
-    labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
+    labelForImageDisplay, labelQRForImage, labelInstructionForDownload = create_main_window(settings.isUsingHardwareButtons)
 
     display_random_history_image(labelForImageDisplay, labelQRForImage, labelInstructionForDownload) # display a random image
 
