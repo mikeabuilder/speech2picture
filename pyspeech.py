@@ -1121,7 +1121,7 @@ def display_image(image_path, label=None, labelQR = None):
     #update QR label
     if labelQR and not skip_QR:  # AND S3 store enabled
         QRFile = image_path.replace("-image.png", '-s3_url.jpg')
-        if os.QRFile.exists():
+        if os.path.exists(QRFile):
             QRimg =  Image.open(QRFile)
             QR_resize = .1    # user 10% of full image space for the QR code
             QR_size = int( QR_resize * min(new_width, new_height))
