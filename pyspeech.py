@@ -1136,7 +1136,7 @@ def display_image(image_path, label=None, labelQR = None):
 
     return label
 
-def display_random_history_image(labelForImageDisplay):
+def display_random_history_image(labelForImageDisplay, labelQRForImage = None):
     '''
     display a random image from the idleDisplayFiles in the window using the label object
     '''
@@ -1158,7 +1158,7 @@ def display_random_history_image(labelForImageDisplay):
                 #add to the list
                 imagesToDisplay.append(file)
         random.shuffle(imagesToDisplay) # randomize the list
-        display_image(idleDisplayFolder + "/" + imagesToDisplay[0], labelForImageDisplay)
+        display_image(idleDisplayFolder + "/" + imagesToDisplay[0], labelForImageDisplay, labelQRForImage)
         
         update_main_window()
 
@@ -1458,7 +1458,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
         logger.info("Displaying image...")
 
         try:
-            display_image(newImageFileName, labelForImageDisplay)
+            display_image(newImageFileName, labelForImageDisplay, labelQRForImage)
             display_text_in_message_window() # Hide the message window
         except Exception as e:
             logger.error("Error displaying image: " + newImageFileName, exc_info=True)
@@ -1520,7 +1520,7 @@ def main():
     # create the main window
     labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
 
-    display_random_history_image(labelForImageDisplay) # display a random image
+    display_random_history_image(labelForImageDisplay, labelQRForImage) # display a random image
 
     # create the message window
     labelForMessageDisplay = create_message_window()
@@ -1544,7 +1544,7 @@ def main():
 
     lastCommandTime = 0
 
-    display_random_history_image(labelForImageDisplay)
+    display_random_history_image(labelForImageDisplay, labelQRForImage)
 
     while not gw.isQuitting:
 
@@ -1617,7 +1617,7 @@ def main():
                         randomDisplayMode = True 
 
                     if randomDisplayMode:
-                        display_random_history_image(labelForImageDisplay)
+                        display_random_history_image(labelForImageDisplay,labelQRForImage)
 
                     update_main_window()
 
@@ -1647,7 +1647,7 @@ def main():
                             randomDisplayMode = True 
                             
                     if randomDisplayMode:
-                        display_random_history_image(labelForImageDisplay)
+                        display_random_history_image(labelForImageDisplay, labelQRForImage)
 
 
         if settings.isAudioKeywords: 
