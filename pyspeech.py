@@ -859,15 +859,22 @@ def create_main_window(usingHardwareButton):
     labelForImage.configure(bg='#000000', highlightcolor="#f4ff55", 
                                 highlightthickness=10,) 
     
-    # add a label for the S3_QR code
-    labelInstructionForDownload = tk.Label(gw.windowMain, text=5*"\n"+"Scan to download" ,
-                     font=("Helvetica", 24),
-                     justify=tk.CENTER,
-                     wraplength=300,
-                     bg="#FC015D",
-                     fg='#FFFFFF',
-                     )
-    #if gw.useS3:
+    # add a instructions and label for the S3_QR code
+    if True:   # gw.useS3:
+        labelInstructionForDownload = tk.Label(gw.windowMain, text=5*"\n"+"Scan to download" ,
+                        font=("Helvetica", 24),
+                        justify=tk.CENTER,
+                        wraplength=300,
+                        bg="#FC015D",
+                        fg='#FFFFFF',
+                        )
+        # add a label to display the images
+        labelQRForImage = tk.Label(gw.windowMain)
+        
+        # The label will be dimensioned when the image is loaded
+        labelQRForImage.configure(bg="#FFFFFF")#, highlightcolor="#f4ff55", 
+                                    #highlightthickness=10,)
+    
 
     
     # set up the grid
@@ -883,7 +890,7 @@ def create_main_window(usingHardwareButton):
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
     labelInstructionForDownload.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
-    #labelQRForImage.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
+    labelQRForImage.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
     labelQRText.grid(     row=1, column=3,               padx=(10,0),  pady=10, sticky=tk.W)
     labelCreditsText.grid(row=2, column=1, columnspan=4, padx=0,       pady=10, sticky=tk.W)
@@ -904,7 +911,7 @@ def create_main_window(usingHardwareButton):
 
     update_main_window()
 
-    return labelForImage
+    return labelForImage, labelQRForImage
    
 
 def update_main_window():
@@ -1069,7 +1076,7 @@ def display_text_in_message_window(message=None, labelToUse=None):
     gw.windowForMessages.update()
 
 
-def display_image(image_path, label=None):
+def display_image(image_path, label=None, labelQR = None):
     '''
     display an image in the window using the label object
     '''
@@ -1102,12 +1109,30 @@ def display_image(image_path, label=None):
         label.image = photoImage  # Keep a reference to the image to prevent it from being garbage collected
 
         update_main_window()
+        skip_QR = False
 
     except Exception as e:
         print("Error with image file: " + image_path)
         print(e)
         logger.error("Error with image file: " + image_path)
         logger.error(e)
+        skip_QR = True
+
+    #update QR label
+    if labelQR and not skip_QR:  # AND S3 store enabled
+        QRFile = image_path.replace("-image.png", '-s3_url.jpg')
+        if os.QRFile.exists():
+            QRimg =  Image.open(QRFile)
+            QR_resize = .1    # user 10% of full image space for the QR code
+            QR_size = int( QR_resize * min(new_width, new_height))
+            QRimg.resize(QR_size, QR_size, Image.NEAREST)
+
+            # conver to photoImage
+            QR_photo = ImageTk.PhotoImage(QRimg)
+            labelQR.configure(image = photoImage)
+            label.image = QR_photo
+            update_main_window()
+
 
     return label
 
@@ -1493,7 +1518,7 @@ def main():
     settings = parseCommandLineArgs() # get the command line arguments
  
     # create the main window
-    labelForImageDisplay = create_main_window(settings.isUsingHardwareButtons)
+    labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
 
     display_random_history_image(labelForImageDisplay) # display a random image
 
