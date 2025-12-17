@@ -861,9 +861,9 @@ def create_main_window(usingHardwareButton):
     
     # add a label for the S3_QR code
     labelQRForImage = tk.Label(gw.windowMain, text="QR CODE FOR DOWNLOAD GOES HERE" ,
-                     font=("Helvetica", 30),
+                     font=("Helvetica", 24),
                      justify=tk.CENTER,
-                     wraplength=30,
+                     wraplength=300,
                      bg="#FC015D",
                      fg='#FFFFFF',
                      )
