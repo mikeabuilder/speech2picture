@@ -872,8 +872,8 @@ def create_main_window(usingHardwareButton):
         labelQRForImage = tk.Label(gw.windowMain)
         
         # The label will be dimensioned when the image is loaded
-        labelQRForImage.configure(bg="#02FBE2", highlightcolor="#ff001e", 
-                                    highlightthickness=10,)
+        labelQRForImage.configure(bg="#02FBE2")#, highlightcolor="#ff001e", 
+                                    #highlightthickness=10,)
     
 
     
@@ -890,8 +890,9 @@ def create_main_window(usingHardwareButton):
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
     
-    labelQRForImage.grid(row = 1, column=4)#             row=0, column=6, rowspan=1, padx = (0,0),   pady=10)#rowspan = 5
-    labelInstructionForDownload.grid( row=0, column=6, rowspan=1, padx = (0,0),   pady=10)#rowspan = 5
+    labelQRForImage.grid(             row=0, column=6, rowspan=5, padx = (0,0),   pady=10)#rowspan = 5
+    labelInstructionForDownload.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)#rowspan = 5
+
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
     labelQRText.grid(     row=1, column=3,               padx=(10,0),  pady=10, sticky=tk.W)
     labelCreditsText.grid(row=2, column=1, columnspan=4, padx=0,       pady=10, sticky=tk.W)
@@ -1127,10 +1128,10 @@ def display_image(image_path, label=None, labelQR = None):
         if os.path.exists(QRFile):
             print (F"OPening QR file {QRFile}")
             QRimg =  Image.open(QRFile)
-            #QR_resize = .1    # user 10% of full image space for the QR code
-            #QR_size = int( QR_resize * min(new_width, new_height))
-            #print (f"QR SIZE TARGET {QR_size}")
-            #QRimg.resize((QR_size, QR_size), Image.NEAREST)
+            QR_resize = .1    # user 10% of full image space for the QR code
+            QR_size = int( QR_resize * min(new_width, new_height))
+            print (f"QR SIZE TARGET {QR_size}")
+            QRimg.resize((QR_size, QR_size), Image.NEAREST)
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
