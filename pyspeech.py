@@ -1112,7 +1112,7 @@ def display_image(image_path, label=None, labelQR = None):
         label.image = photoImage  # Keep a reference to the image to prevent it from being garbage collected
 
         update_main_window()
-        skip_QR = False
+        skip_QR = True
 
     except Exception as e:
         print("Error with image file: " + image_path)
