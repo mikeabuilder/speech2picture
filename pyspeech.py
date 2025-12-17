@@ -882,7 +882,7 @@ def create_main_window(usingHardwareButton):
  
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
-    labelInstructionForDownload( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
+    labelInstructionForDownload.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
     #labelQRForImage.grid( row=0, column=6, rowspan=5, padx = (0,0),   pady=10)
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
     labelQRText.grid(     row=1, column=3,               padx=(10,0),  pady=10, sticky=tk.W)
