@@ -878,7 +878,7 @@ def create_main_window(usingHardwareButton):
  
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
-    labelQRForImage.grid(             row=0, column=6, rowspan=5, padx = (0,0),   pady=10)#rowspan = 5
+    labelQRForImage.grid( row=0, column=6, rowspan=5,    padx=(0,0),   pady=10)
     
 
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
@@ -1068,7 +1068,7 @@ def display_text_in_message_window(message=None, labelToUse=None):
     gw.windowForMessages.update()
 
 
-def display_image(image_path, label=None, labelQR = None, label_inst = None):
+def display_image(image_path, label=None, labelQR = None):
     '''
     display an image in the window using the label object
     '''
@@ -1112,7 +1112,7 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
 
     #update QR label
     if labelQR and not skip_QR:  # AND S3 store enabled
-        QRFile = image_path.replace("-image.png", '-s3_url.png')
+        QRFile = image_path.replace("-image.png", '-s3_url.jpg')
         if os.path.exists(QRFile):
             QRimg =  Image.open(QRFile)
             QR_resize = .15    # user 10% of full image space for the QR code
