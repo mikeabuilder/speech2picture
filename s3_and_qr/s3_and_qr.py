@@ -54,7 +54,7 @@ def upload_to_s3_and_generate_qr(file_path,
         
         # Save as a JPG file
         qr_code_filename = str(file_path).replace("-image.png","-s3_url.jpg")
-        img.save(qr_code_filename, "jpg")
+        img.save(qr_code_filename, "JPEG")
         print(f"QR code image saved as {qr_code_filename}")
         
     except Exception as e:
