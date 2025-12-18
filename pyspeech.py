@@ -1198,6 +1198,10 @@ def parseCommandLineArgs():
         loggerTrace.setLevel(logging.DEBUG)
         logger.debug("Debug level set to show prompts and response JSON")
 
+    # set S3 use or not
+    if args.no_s3:
+        rtn.useS3 = False
+
 
     # if true, don't ask user for input, rely on hardware buttons
     rtn.isUsingHardwareButtons = False
@@ -1240,8 +1244,7 @@ def parseCommandLineArgs():
         if args.savefiles:
             rtn.isSaveFiles = True
 
-        if args.no_s3:
-            rtn.useS3 = False
+
 
     return rtn
 
