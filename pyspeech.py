@@ -1145,8 +1145,8 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
             inst_img = Image.open("download_instructions.jpg")
             inst_img = inst_img.resize((QR_size, QR_size), Image.NEAREST)
             inst_photo = ImageTk.PhotoImage(inst_img)
-            QR_x = Qrimg.place_info.get("relx") #get location of QRimg
-            QR_y = Qrimg.place_info.get("rely")
+            QR_x = QRimg.place_info.get("relx") #get location of QRimg
+            QR_y = QRimg.place_info.get("rely")
             label_inst.place(QR_x,QR_y + QRimg.height)
             label_inst.configure(image = inst_photo)
             label_inst.image = inst_photo
