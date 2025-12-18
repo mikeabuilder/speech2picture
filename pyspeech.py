@@ -1184,7 +1184,7 @@ def parseCommandLineArgs():
     parser.add_argument("-i", "--image", help="use image from file", type=str, default=0) # optional argument
     parser.add_argument("-o", "--onlykeywords", help="use audio directly without extracting keywords", action="store_true") # optional argument
     parser.add_argument("-g", "--gokiosk", help="jump into Kiosk mode", action="store_true") # optional argument
-    parser.add_argument("-q", "--no_s3", help = "don't try to store image files to AWS S3", action="store_true")
+    parser.add_argument("-q", "--use_s3", help = "try to store image files to AWS S3, and generate QRcodes", action="store_true")
     args = parser.parse_args()
 
     # set the debug level
@@ -1199,8 +1199,8 @@ def parseCommandLineArgs():
         logger.debug("Debug level set to show prompts and response JSON")
 
     # set S3 use or not
-    if args.no_s3:
-        rtn.useS3 = False
+    if args.use_s3: rtn.useS3 = True
+    else:           rtn.useS3 = False
 
 
     # if true, don't ask user for input, rely on hardware buttons
