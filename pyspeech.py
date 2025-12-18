@@ -1140,8 +1140,9 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
+
             update_main_window()
-            print(f" QR label place_info {labelQR.place()}  \n  {type(labelQR.place())}  ")
+            '''print(f" QR label place_info {labelQR.place()}  \n  {type(labelQR.place())}  ")
 
             inst_img = Image.open("download_instructions.jpg")
             inst_img = inst_img.resize((QR_size, QR_size), Image.NEAREST)
@@ -1150,7 +1151,7 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
             QR_y = labelQR.place_info()["rely"]
             label_inst.place(relx = QR_x, rely = QR_y + QRimg.height)
             label_inst.configure(image = inst_photo)
-            label_inst.image = inst_photo
+            label_inst.image = inst_photo'''
 
 
 
