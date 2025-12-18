@@ -156,6 +156,7 @@ import json
 import string
 from enum import IntEnum
 from PIL import Image, ImageDraw, ImageFont, ImageTk
+from s3_and_qr import upload_to_s3_and_generate_qr
 
 import openai
 S2P_VERSION = "1.1"
@@ -240,6 +241,10 @@ if not g_isMacOS:
     BUTTON_GO = 10
     BUTTON_PULL_UP_DOWN = GPIO.PUD_UP
     BUTTON_PRESSED = GPIO.LOW  
+
+# set S3 constants
+s3_bucket_to_store_in = "amzn-s3-speech2picture"
+
 
 # used by command line args to jump into the middle of the process
 class processStep(IntEnum):
@@ -795,9 +800,9 @@ def create_main_window(usingHardwareButton):
     gw.windowMain.configure(bg='#52837D')
    
     # Instructions text
-    if True:  # s3 instructions mike
-        QR_download_text = " Scan the QR to download."
-    else: QR_download_text = ""
+    if gw.useS3:  QR_download_text = " Scan the QR to download."  # only show this is the QR for downloading is being displayed.
+    else:         QR_download_text = ""
+
     INSTRUCTIONS_TEXT = ('\r\nTRY ME NOW !\rAn Interactive Art Exhibit\n\rWhen you are ready, press and release the'
                     + ' button. The light will flash quickly. You will have 10 seconds to speak a few words to use to'
                     + ' make an AI image. Then wait.'
@@ -1115,7 +1120,7 @@ def display_image(image_path, label=None, labelQR = None):
         skip_QR = True
 
     #update QR label
-    if labelQR and not skip_QR:  # AND S3 store enabled
+    if labelQR and not skip_QR and gw.useS3: 
         QRFile = image_path.replace("-image.png", '-s3_url.jpg')
         if os.path.exists(QRFile):
             QRimg =  Image.open(QRFile)
@@ -1129,22 +1134,6 @@ def display_image(image_path, label=None, labelQR = None):
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
             update_main_window()
-            '''print(f" QR label place_info {labelQR.place()}  \n  {type(labelQR.place())}  ")
-
-            inst_img = Image.open("download_instructions.jpg")
-            inst_img = inst_img.resize((QR_size, QR_size), Image.NEAREST)
-            inst_photo = ImageTk.PhotoImage(inst_img)
-            QR_x = labelQR.place_info()["relx"] #get location of QRimg
-            QR_y = labelQR.place_info()["rely"]
-            label_inst.place(relx = QR_x, rely = QR_y + QRimg.height)
-            label_inst.configure(image = inst_photo)
-            label_inst.image = inst_photo'''
-
-
-
-            
-    else: print ("Skipped QRfile image stuff in display_image")
-
 
     return label
 
@@ -1152,7 +1141,6 @@ def display_random_history_image(labelForImageDisplay, labelQRForImage = None):
     '''
     display a random image from the idleDisplayFiles in the window using the label object
     '''
-    if labelQRForImage == None: print ("mike - QR label argument not passed!")
     # static variable to hold last time an image was displayed
     if not hasattr(display_random_history_image, "lastImageDisplayedTime"):
         display_random_history_image.lastImageDisplayedTime = 0  # it doesn't exist yet, so initialize it
@@ -1255,7 +1243,7 @@ def parseCommandLineArgs():
     return rtn
 
 
-def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, labelForStatusDisplay, filePrefix):
+def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, labelForStatusDisplay, filePrefix, labelQRForImage = None ):
     '''
     main routine to process audio to picture
     '''
@@ -1437,6 +1425,10 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
 
             logToFile.info("Image file: " + newImageFileName)
 
+            if gw.useS3:
+                 result = upload_to_s3_and_generate_qr( file_path = newImageFileName, bucket_name = s3_bucket_to_store_in, S3_dir= "idleDisplayFiles")
+
+
             changeBlinkRate(BLINK_STOP)
             nextProcessStep = processStep.DisplayImage  
 
@@ -1471,7 +1463,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
         logger.info("Displaying image...")
 
         try:
-            display_image(newImageFileName, labelForImageDisplay, labelQRForImage)
+            display_image(newImageFileName, labelForImageDisplay, labelQRForImage)  # mike
             display_text_in_message_window() # Hide the message window
         except Exception as e:
             logger.error("Error displaying image: " + newImageFileName, exc_info=True)
@@ -1529,6 +1521,7 @@ def main():
 
     # args
     settings = parseCommandLineArgs() # get the command line arguments
+    gw.useS3 = settings.useS3         # useS3 added to globals so it can be used as a switch in image creation and display 
  
     # create the main window
     labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
@@ -1674,7 +1667,7 @@ def main():
             for i in range(0, settings.numLoops, 1):
                 # this is where all the work happens
                 # collect audio, transcribe, summarize, extract keywords, generate images, display images
-                audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, labelForStatusDisplay, filePrefix)  # XXX
+                audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, labelForStatusDisplay, filePrefix, labelQRForImage)  # XXX
 
                 if not settings.isUsingHardwareButtons and settings.numLoops > 1: 
                     # delay before the next for loop iteration, we don't do this when using hardware buttons

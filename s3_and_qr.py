@@ -76,7 +76,7 @@ if __name__ == '__main__':
         qr_image_path = path.parent / path.name.replace("-image.png","-s3_url.jpg")
 
         if path.is_file() and path.name.endswith("-image.png"):
-            result = upload_to_s3_and_generate_qr( file_path = path, bucket_name = s3_bucket_to_store_in, S3_dir= "idleDisplayFiles")
+            result = upload_to_s3_and_generate_qr( file_path = path, bucket_name = s3_bucket_to_store_in, S3_dir= "")
             if result == "success" : 
                 # move the image file to the IdleDisplayFiles folder unless it already exists there (in which case, delete it)
                 if not os.path.exists(Path("idleDisplayFiles")/path.name):
