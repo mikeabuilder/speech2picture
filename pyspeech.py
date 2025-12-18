@@ -795,10 +795,14 @@ def create_main_window(usingHardwareButton):
     gw.windowMain.configure(bg='#52837D')
    
     # Instructions text
+    if True:  # s3 instructions mike
+        QR_download_text = " Scan the QR to download."
+    else: QR_download_text = ""
     INSTRUCTIONS_TEXT = ('\r\nTRY ME NOW !\rAn Interactive Art Exhibit\n\rWhen you are ready, press and release the'
                     + ' button. The light will flash quickly. You will have 10 seconds to speak a few words to use to'
                     + ' make an AI image. Then wait.'
                     + ' Images will appear shortly.'
+                    + QR_download_text
                     + '\r\nUntil then, enjoy some previous "promptography" images!')
 
     labelTextLong = tk.Label(gw.windowMain, text=INSTRUCTIONS_TEXT, 
