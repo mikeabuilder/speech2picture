@@ -10,7 +10,7 @@ def upload_to_s3_and_generate_qr(file_path,
                                  S3_dir
                                  ):
     """
-    Uploads a file to AWS S3 and generates a JPG QR code to download it.
+    Uploads a file to AWS S3 and generates PNG QR code to download it.
 
     :param file_path: Local path to the file to upload.
     :param bucket_name: Name of the S3 bucket.
@@ -52,9 +52,9 @@ def upload_to_s3_and_generate_qr(file_path,
 
         img = qr.make_image(fill_color="black", back_color="transparent")
         
-        # Save as a JPG file
-        qr_code_filename = str(file_path).replace("-image.png","-s3_url.jpg")
-        img.save(qr_code_filename, "JPEG")
+        # Save as a PNG file
+        qr_code_filename = str(file_path).replace("-image.png","-s3_url.png")
+        img.save(qr_code_filename, "png")
         print(f"QR code image saved as {qr_code_filename}")
         
     except Exception as e:
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     for item in Path.iterdir(Path("addToIdleDisplayFiles")):# os.listdir("addToIdleDisplayFiles"):
         path = Path(item)
-        qr_image_path = path.parent / path.name.replace("-image.png","-s3_url.jpg")
+        qr_image_path = path.parent / path.name.replace("-image.png","-s3_url.png")
 
         if path.is_file() and path.name.endswith("-image.png"):
             result = upload_to_s3_and_generate_qr( file_path = path, bucket_name = s3_bucket_to_store_in, S3_dir= "idleDisplayFiles")
