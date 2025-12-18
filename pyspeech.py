@@ -874,7 +874,7 @@ def create_main_window(usingHardwareButton):
         labelQRForImage = tk.Label(gw.windowMain)
         
         # The label will be dimensioned when the image is loaded
-        labelQRForImage.configure(bg="#FFFFFF00")#, highlightcolor="#ff001e", 
+        labelQRForImage.configure(bg="#FFFFFF")#, highlightcolor="#ff001e", 
                                     #highlightthickness=10,)
     else: 
         labelInstructionForDownload = None
@@ -1140,16 +1140,20 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
+            update_main_window()
 
             inst_img = Image.open("download_instructions.jpg")
             inst_img = inst_img.resize((QR_size, QR_size), Image.NEAREST)
             inst_photo = ImageTk.PhotoImage(inst_img)
+            QR_x = Qrimg.place_info.get("relx") #get location of QRimg
+            QR_y = Qrimg.place_info.get("rely")
+            label_inst.place(QR_x,QR_y + QRimg.height)
             label_inst.configure(image = inst_photo)
             label_inst.image = inst_photo
 
 
 
-            update_main_window()
+            
     else: print ("Skipped QRfile image stuff in display_image")
 
 
