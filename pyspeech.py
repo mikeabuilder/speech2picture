@@ -874,8 +874,11 @@ def create_main_window(usingHardwareButton):
         labelQRForImage = tk.Label(gw.windowMain)
         
         # The label will be dimensioned when the image is loaded
-        labelQRForImage.configure(bg="#FFFFFF")#, highlightcolor="#ff001e", 
+        labelQRForImage.configure(bg="#FFFFFF00")#, highlightcolor="#ff001e", 
                                     #highlightthickness=10,)
+    else: 
+        labelInstructionForDownload = None
+        labelQRForImage = None
     
 
     
