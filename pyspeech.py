@@ -868,11 +868,13 @@ def create_main_window(usingHardwareButton):
     labelForImage.configure(bg='#000000', highlightcolor="#f4ff55", 
                                 highlightthickness=10,) 
     
-    # add a label to display the QRcode for the image
-    labelQRForImage = tk.Label(gw.windowMain)
-    
-    # The label will be dimensioned when the image is loaded
-    labelForImage.configure(bg='#000000')
+    if gw.useS3:
+        # add a label to display the QRcode for the image
+        labelQRForImage = tk.Label(gw.windowMain)
+        
+        # The label will be dimensioned when the image is loaded
+        labelForQRImage.configure(bg='#000000')
+    else: labelQRForImage = None
 
     
     # set up the grid
@@ -887,7 +889,8 @@ def create_main_window(usingHardwareButton):
  
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
-    labelQRForImage.grid( row=0, column=6, rowspan=5,    padx=(0,0),   pady=10)
+    if gw.useS3: 
+        labelQRForImage.grid( row=0, column=6, rowspan=5,    padx=(0,0),   pady=10)
     
 
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
