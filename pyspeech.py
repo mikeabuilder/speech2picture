@@ -1135,8 +1135,8 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
 
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
-            #labelQR.configure(image = QR_photo)
-            #labelQR.image = QR_photo  # keep a reference to prevent garbage collection
+            labelQR.configure(image = QR_photo)
+            labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
             inst_img = Image.open("download_instructions.jpg")
             inst_img = inst_img.resize((QR_size, QR_size), Image.NEAREST)
