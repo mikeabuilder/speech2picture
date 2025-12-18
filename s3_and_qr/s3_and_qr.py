@@ -45,13 +45,12 @@ def upload_to_s3_and_generate_qr(file_path,
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
-            border=5,
-            back_color = 'transparent'
+            border=5
         )
         qr.add_data(download_url)
         qr.make(fit=True)
 
-        img = qr.make_image(fill_color="black", back_color="white")
+        img = qr.make_image(fill_color="black", back_color="transparent")
         
         # Save as a JPG file
         qr_code_filename = str(file_path).replace("-image.png","-s3_url.jpg")
