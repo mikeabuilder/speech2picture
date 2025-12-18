@@ -45,7 +45,8 @@ def upload_to_s3_and_generate_qr(file_path,
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
-            border=4,
+            border=5,
+            back_color = 'transparent'
         )
         qr.add_data(download_url)
         qr.make(fit=True)
