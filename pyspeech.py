@@ -1141,7 +1141,7 @@ def display_image(image_path, label=None, labelQR = None, label_inst = None):
             labelQR.configure(image = QR_photo)
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
             update_main_window()
-            pring(f" QR label place_info {labelQR.place_info()}  \n  {type(labelQR.place_info())}  ")
+            print(f" QR label place_info {labelQR.place_info()}  \n  {type(labelQR.place_info())}  ")
 
             inst_img = Image.open("download_instructions.jpg")
             inst_img = inst_img.resize((QR_size, QR_size), Image.NEAREST)
