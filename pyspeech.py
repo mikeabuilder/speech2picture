@@ -682,26 +682,30 @@ def getImageURL(phrase):
     logger.info("Generating image...")
     logger.info("image prompt: " + prompt)
 
-    # use openai to generate a picture based on the summary
-    try:
-        responseImage = client.images.generate(
-            prompt= prompt,
-            model = "dall-e-2",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
-            n=4,                 # dall-e-3 dows not accept a numebr >1
-            size="512x512"       # gpt-image-1.5 minimum soze is 1024 x 1024
-            )
-    except Exception as e:
-        print("\n\n\n")
-        print(e)
-        print("\n\n\n")
-        raise (e)
-        
-    loggerTrace.debug("responseImage: " + str(responseImage))
+    image_url = []
+    for i in range (4):
 
-    image_url = [responseImage.data[0].url] * 4
+        # use openai to generate a picture based on the summary
+        try:
+            responseImage = client.images.generate(
+                prompt= prompt,
+                model = "dall-e-3",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
+                n=1,                 # dall-e-3 dows not accept a numebr >1
+                size="512x512"       # gpt-image-1.5 minimum soze is 1024 x 1024
+                )
+        except Exception as e:
+            print("\n\n\n")
+            print(e)
+            print("\n\n\n")
+            raise (e)
+            
+        loggerTrace.debug("responseImage: " + str(responseImage))
+        image_url.append(responseImage.data.url)
+
+    '''image_url = [responseImage.data[0].url] * 4
     image_url[1] = responseImage.data[1].url
     image_url[2] = responseImage.data[2].url
-    image_url[3] = responseImage.data[3].url
+    image_url[3] = responseImage.data[3].url'''
 
     return image_url, modifierUsed
 
