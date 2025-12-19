@@ -686,9 +686,9 @@ def getImageURL(phrase):
     try:
         responseImage = client.images.generate(
             prompt= prompt,
-            model = "dall-e-3",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
-            n=4,
-            size="512x512"# gpt-image-1.5 minimum soze is 1024 x 1024
+            model = "dall-e-2",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
+            n=4,                 # dall-e-3 dows not accept a numebr >1
+            size="512x512"       # gpt-image-1.5 minimum soze is 1024 x 1024
             )
     except Exception as e:
         print("\n\n\n")
