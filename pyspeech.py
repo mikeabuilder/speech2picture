@@ -693,7 +693,7 @@ def getImageURL(phrase):
                 n=1,                 # dall-e-3 dows not accept a numebr >1
                 size="1024x1024"#"512x512"       # gpt-image-1.5 minimum soze is 1024 x 1024
                 )
-            print (responseImage)
+            print (type(responseImage),"\n",responseImage, "\n")
         except Exception as e:
             print("\n\n\n")
             print(e)
@@ -701,7 +701,7 @@ def getImageURL(phrase):
             raise (e)
             
         loggerTrace.debug("responseImage: " + str(responseImage))
-        image_url.append(responseImage["data"]["url"])
+        image_url.append(responseImage.data.url)
 
     '''image_url = [responseImage.data[0].url] * 4
     image_url[1] = responseImage.data[1].url
