@@ -688,7 +688,8 @@ def getImageURL(phrase):
             prompt= prompt,
             model = "gpt-image-1.5",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
             n=4,
-            size="512x512")
+            size="1024x1024"#"512x512" gpt-image-1.5 minimum soze is 1024 x 1024
+            )
     except Exception as e:
         print("\n\n\n")
         print(e)
