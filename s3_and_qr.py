@@ -3,11 +3,10 @@ import qrcode
 from io import BytesIO
 from pathlib import Path
 from botocore.exceptions import NoCredentialsError, ClientError
-import os, sys
+import os, sys, json
 
 def upload_to_s3_and_generate_qr(file_path, 
-                                 bucket_name,
-                                 S3_dir
+                                 S3_dir = ""
                                  ):
     """
     Uploads a file to AWS S3 and generates a JPG QR code to download it.
@@ -16,8 +15,23 @@ def upload_to_s3_and_generate_qr(file_path,
     :param bucket_name: Name of the S3 bucket.
     :return: string : "success" or "fail"
     """
+    #open json file and get AWS credentials and bucket info
+    try:
+        with open("s3_info-mike.json", 'r') as file:
+            data = json.load(file)
+            bucket_name = data["S3_BUCKET"]
+    except FileNotFoundError:
+        print("Error: The file 's3_info.json' was not found.")
+        return "fail"
+    except json.JSONDecodeError:
+        print("Error: Could not decode JSON from the file 's3_info.json'. Check file format.")
+        return "fail"
 
-    s3_client = boto3.client('s3')     # connect to S3
+    # Create an AWS client object to access S3
+    s3_client = boto3.client('s3', 
+                             aws_access_key_id = data["AWS_ACCESS_KEY"],
+                             aws_secret_access_key = data["AWS_SECRET_ACCESS_KEY"],
+                             region_name = data["AWS_REGION"] )     
     
     # 1. Upload file to S3
     object_key = S3_dir+ "/"+ Path(file_path).name    #filename is the last part of the path
@@ -68,15 +82,12 @@ if __name__ == '__main__':
     # Look for files in the moveToIdleDisplay folder and upload each one to S3 and create a qr code for it. 
     # Them move the file to the idleDisplayFiles folder, and keep the QR code in the same folder.
 
-    #Define S3 parameters
-    s3_bucket_to_store_in = "amzn-s3-speech2picture" 
-
-    for item in Path.iterdir(Path("addToIdleDisplayFiles")):# os.listdir("addToIdleDisplayFiles"):
+    for item in Path.iterdir(Path("addToIdleDisplayFiles")):
         path = Path(item)
         qr_image_path = path.parent / path.name.replace("-image.png","-s3_url.jpg")
 
         if path.is_file() and path.name.endswith("-image.png"):
-            result = upload_to_s3_and_generate_qr( file_path = path, bucket_name = s3_bucket_to_store_in, S3_dir= "")
+            result = upload_to_s3_and_generate_qr( file_path = path, S3_dir= "")
             if result == "success" : 
                 # move the image file to the IdleDisplayFiles folder unless it already exists there (in which case, delete it)
                 if not os.path.exists(Path("idleDisplayFiles")/path.name):

@@ -30,6 +30,11 @@ To run this you need to get an OpenAI API key and put it in a file called "creep
 OpenAI currently costs a few pennies to use. I've run this for an hour at a cost of $1.00. It was
 well worth it.
 
+If you want to use the -q option, which stores the completed pictures in the AWS S3 cloud and displays 
+QR code to allow instant download, you will need to create an Amazon AWS account and create an S3 bucket, 
+and a couple of other things.  More complete instructions are in the file names s3_and_qr_readme.txt
+
+
 ALSO NOTE: If you are not getting any audio, then you may not have given the program
 permission to access your microphone. On OSX it took me some searching to figure this out.
 https://superuser.com/questions/1441270/apps-dont-show-up-in-camera-and-microphone-privacy-settings-in-macbook
@@ -75,6 +80,7 @@ Specific to Raspberry Pi:
 
         2a. for RPi version 3 install these
             sudo apt-get install portaudio19-dev
+
             On the 2023-10-10 64 bit Raspbian OS you don't need to install these
             #sudo apt-get install libasound2-dev
             #sudo apt-get install libatlas-base-dev
@@ -112,7 +118,8 @@ Specific to Raspberry Pi:
         pip install pillow
         pip install pyaudio
         pip install RPi.GPIO
-     
+        pip install boto3       needed only if you are going to use teh -q option to store finished images in the AWS S3 cloud
+        pip install qrcode      needed if you are using the -q option and S3 to enable instant downloads via QR code
 
     Note that when run you will see 10 or so lines of errors about sockets and JACKD and whatnot.
     Don't worry, it is still working. If you know how to fix this, please let me know.
@@ -135,6 +142,7 @@ v 0.5 Initial version
 v 0.6 2023-11-12 inverted Go Button logic so it is active low (pulled to ground)
 v 0.7 updated to python 3.12 and openAI 1.0.0 (wow that was a pain)
       BE SURE to read updated install instructions above
+v 1.2 Added capability to store images created in teh AWS S3 cloud and display a QR code to them for instant download
 """
 
 # import common libraries
@@ -159,7 +167,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 from s3_and_qr import upload_to_s3_and_generate_qr
 
 import openai
-S2P_VERSION = "1.1"
+S2P_VERSION = "1.2"
 
 g_isMacOS = False
 if (platform.system() == "Darwin"):
@@ -678,6 +686,7 @@ def getImageURL(phrase):
     try:
         responseImage = client.images.generate(
             prompt= prompt,
+            model = "gpt-image-1.5",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
             n=4,
             size="512x512")
     except Exception as e:
@@ -1432,7 +1441,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
             logToFile.info("Image file: " + newImageFileName)
 
             if gw.useS3:
-                 result = upload_to_s3_and_generate_qr( file_path = newImageFileName, bucket_name = s3_bucket_to_store_in, S3_dir= "idleDisplayFiles")
+                 result = upload_to_s3_and_generate_qr( file_path = newImageFileName, S3_dir= "idleDisplayFiles")
 
 
             changeBlinkRate(BLINK_STOP)
