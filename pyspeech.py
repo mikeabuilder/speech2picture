@@ -1180,7 +1180,7 @@ def display_image(image_path, label=None, labelQR = None):
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
             if gw.single_image:
-                labelQR.place(x=0, y =0)
+                labelQR.place(x=label.winfo_x(), y =label.winfo_y())
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
             update_main_window()
