@@ -798,9 +798,12 @@ def create_main_window(usingHardwareButton):
     gw.windowMain.title("Speech 2 Picture")
     gw.windowMain.protocol("WM_DELETE_WINDOW", quitButtonPressed)
     
+    gw.windowMain.configure(bg='#52837D')
     if gw.kiosk_mode:
+        print("Mike - in kiosk mode. trying to set main window to full screen")
         gw.windowMain.attributes("-fullscreen", True)
     else:
+        print ("mike - not running in kiosk mode, don't fill the screen")
         # find the screen size and center the window
         screen_width = gw.windowMain.winfo_screenwidth()
         screen_height = gw.windowMain.winfo_screenheight()
@@ -809,7 +812,7 @@ def create_main_window(usingHardwareButton):
         gw.windowMain.geometry(str(int(screen_width*.95)) + "x" + str(int(screen_height*.95)))
         #set window position
         gw.windowMain.geometry("+%d+%d" % (screen_width*0.02, screen_height*0.02))
-    gw.windowMain.configure(bg='#52837D')
+    
 
     
    
