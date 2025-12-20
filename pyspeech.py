@@ -682,31 +682,25 @@ def getImageURL(phrase):
     logger.info("Generating image...")
     logger.info("image prompt: " + prompt)
 
-    image_url = []
-    for i in range (4):
+    # use openai to generate a picture based on the summary
+    try:
+        responseImage = client.images.generate(
+            prompt= prompt,
+            n=4,
+            size="512x512"
+            )
+    except Exception as e:
+        print("\n\n\n")
+        print(e)
+        print("\n\n\n")
+        raise (e)
+        
+    loggerTrace.debug("responseImage: " + str(responseImage))
 
-        # use openai to generate a picture based on the summary
-        try:
-            responseImage = client.images.generate(
-                prompt= prompt,
-                model = "dall-e-3",  #default is "dall-e-2"  MIKE ADDED THIS LINE. 
-                n=1,                 # dall-e-3 dows not accept a numebr >1
-                size="1024x1024"#"512x512"       # gpt-image-1.5 minimum soze is 1024 x 1024
-                )
-            print (f"IMAGE {i} URL: {responseImage.data[0].url}")
-        except Exception as e:
-            print("\n\n\n")
-            print(e)
-            print("\n\n\n")
-            raise (e)
-            
-        loggerTrace.debug("responseImage: " + str(responseImage))
-        image_url.append(responseImage.data[0].url)
-
-    '''image_url = [responseImage.data[0].url] * 4
+    image_url = [responseImage.data[0].url] * 4
     image_url[1] = responseImage.data[1].url
     image_url[2] = responseImage.data[2].url
-    image_url[3] = responseImage.data[3].url'''
+    image_url[3] = responseImage.data[3].url
 
     return image_url, modifierUsed
 
@@ -813,6 +807,9 @@ def create_main_window(usingHardwareButton):
     #set window position
     gw.windowMain.geometry("+%d+%d" % (screen_width*0.02, screen_height*0.02))
     gw.windowMain.configure(bg='#52837D')
+
+    if gw.kiosk_mode:
+        gw.windowMain.attributes("-fullscreen", True)
    
     # Instructions text
     if gw.useS3:  QR_download_text = " Scan the QR to download."  # only show this is the QR for downloading is being displayed.
@@ -1229,10 +1226,12 @@ def parseCommandLineArgs():
         rtn.numLoops = 1
         rtn.autoLoopDelay = 0
         rtn.nextProcessStep = processStep.NoneSpecified
+        rtn.kiosk_mode = True
     else:
         # if we're given a file via the command line then start at that step
         # check in reverse order so that processStartStep will be the latest step for any set of arguments
         rtn.nextProcessStep = processStep.NoneSpecified
+        rtn.kiosk_mode = False
         if args.image != 0: 
             rtn.nextProcessStep = processStep.UseImageFile
             rtn.inputFileName = args.image
@@ -1248,6 +1247,7 @@ def parseCommandLineArgs():
         elif args.wav != 0:
             rtn.nextProcessStep = processStep.UseAudioFile
             rtn.inputFileName = args.wav
+
 
         # if set, then record only 10 seconds of audio and use that for the keywords
         rtn.isAudioKeywords = False
@@ -1543,6 +1543,7 @@ def main():
     # args
     settings = parseCommandLineArgs() # get the command line arguments
     gw.useS3 = settings.useS3         # useS3 added to globals so it can be used as a switch in image creation and display 
+    gw.kiosk_mode = settings.kiosk_mode
  
     # create the main window
     labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
