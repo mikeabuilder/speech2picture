@@ -683,24 +683,43 @@ def getImageURL(phrase):
     logger.info("image prompt: " + prompt)
 
     # use openai to generate a picture based on the summary
-    try:
-        responseImage = client.images.generate(
-            prompt= prompt,
-            n=4,
-            size="512x512"
-            )
-    except Exception as e:
-        print("\n\n\n")
-        print(e)
-        print("\n\n\n")
-        raise (e)
-        
-    loggerTrace.debug("responseImage: " + str(responseImage))
+    if not gw.single_image:
+        try:
+            responseImage = client.images.generate(
+                prompt= prompt,
+                n=4,
+                size="512x512"
+                )
+        except Exception as e:
+            print("\n\n\n")
+            print(e)
+            print("\n\n\n")
+            raise (e)
+            
+        loggerTrace.debug("responseImage: " + str(responseImage))
 
-    image_url = [responseImage.data[0].url] * 4
-    image_url[1] = responseImage.data[1].url
-    image_url[2] = responseImage.data[2].url
-    image_url[3] = responseImage.data[3].url
+        image_url = [responseImage.data[0].url] * 4
+        image_url[1] = responseImage.data[1].url
+        image_url[2] = responseImage.data[2].url
+        image_url[3] = responseImage.data[3].url
+    
+    else: 
+        try:
+            responseImage = client.images.generate(
+                prompt= prompt,
+                model = "dall-e-3"
+                n=1,
+                size="1024x1024"
+                )
+        except Exception as e:
+            print("\n\n\n")
+            print(e)
+            print("\n\n\n")
+            raise (e)
+            
+        loggerTrace.debug("responseImage: " + str(responseImage))
+
+        image_url = [responseImage.data[0].url]
 
     return image_url, modifierUsed
 
@@ -721,14 +740,21 @@ def postProcessImages(imageURLs, imageModifiers, keywords, timestr, filePrefix):
 
     # combine the images into one image
     #widths, heights = zip(*(i.size for i in imgObjects))
-    total_width = 512*2
-    max_height = 512*2 + 50
-    new_im = Image.new('RGB', (total_width, max_height))
-    locations = [(0,0), (512,0), (0,512), (512,512)]
-    count = -1
-    for loc in locations:
-        count += 1
-        new_im.paste(imgObjects[count], loc)
+    if not gw.single_image:
+        total_width = 512*2
+        max_height = 512*2 + 50
+        new_im = Image.new('RGB', (total_width, max_height))
+        locations = [(0,0), (512,0), (0,512), (512,512)]
+        count = -1
+        for loc in locations:
+            count += 1
+            new_im.paste(imgObjects[count], loc)
+    else:
+        total_width = 1024
+        max_height = 1024 + 50
+        new_im = Image.new('RGB', (total_width, max_height))
+        new_im.paste(imgObjects[0], (0,0))
+
 
     # add text at the bottom
     imageCaption = f'{keywords} {imageModifiers}'
@@ -1153,6 +1179,8 @@ def display_image(image_path, label=None, labelQR = None):
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
+            if gw.single_image:
+                labelQR.place(x=0, y =0)
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
             update_main_window()
@@ -1194,7 +1222,7 @@ def parseCommandLineArgs():
 
     # parse the command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-q", "--use_s3", help = "try to store image files to AWS S3, and generate QRcodes", action="store_true")
+
     parser.add_argument("-s", "--savefiles", help="save the files", action="store_true") # optional argument
     parser.add_argument("-d", "--debug", help="0:info, 1:prompts, 2:responses", type=int) # optional argument
     parser.add_argument("-w", "--wav", help="use audio from file", type=str, default=0) # optional argument
@@ -1204,6 +1232,8 @@ def parseCommandLineArgs():
     parser.add_argument("-i", "--image", help="use image from file", type=str, default=0) # optional argument
     parser.add_argument("-o", "--onlykeywords", help="use audio directly without extracting keywords", action="store_true") # optional argument
     parser.add_argument("-g", "--gokiosk", help="jump into Kiosk mode", action="store_true") # optional argument
+    parser.add_argument("-q", "--use_s3", help = "try to store image files to AWS S3, and generate QRcodes", action="store_true")
+    parser.add_argument("-m", "--mono_image", help = "create a single, large image using dall-e-3", action="store_true")
     
     args = parser.parse_args()
 
@@ -1221,6 +1251,10 @@ def parseCommandLineArgs():
     # set S3 use or not
     if args.use_s3: rtn.useS3 = True
     else:           rtn.useS3 = False
+
+    # set flag for single large image (vs default of 4 small)
+    if args.mono_image: rtn.single_image = True
+    else:               rtn.single_image = False
 
 
     # if true, don't ask user for input, rely on hardware buttons
@@ -1552,6 +1586,7 @@ def main():
     settings = parseCommandLineArgs() # get the command line arguments
     gw.useS3 = settings.useS3         # useS3 added to globals so it can be used as a switch in image creation and display 
     gw.kiosk_mode = settings.kiosk_mode
+    gw.single_image = settings.single_image
  
     # create the main window
     labelForImageDisplay, labelQRForImage = create_main_window(settings.isUsingHardwareButtons)
