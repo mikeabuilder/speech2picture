@@ -798,19 +798,20 @@ def create_main_window(usingHardwareButton):
     gw.windowMain.title("Speech 2 Picture")
     gw.windowMain.protocol("WM_DELETE_WINDOW", quitButtonPressed)
     
-    # find the screen size and center the window
-    screen_width = gw.windowMain.winfo_screenwidth()
-    screen_height = gw.windowMain.winfo_screenheight()
-    # gw.windowMain.minsize(int(screen_width*.8), int(screen_height*.9))
-    #set window size to a bit less than full screen
-    gw.windowMain.geometry(str(int(screen_width*.95)) + "x" + str(int(screen_height*.95)))
-    #set window position
-    gw.windowMain.geometry("+%d+%d" % (screen_width*0.02, screen_height*0.02))
+    if gw.kiosk_mode:
+        gw.windowMain.attributes("-fullscreen", True)
+    else:
+        # find the screen size and center the window
+        screen_width = gw.windowMain.winfo_screenwidth()
+        screen_height = gw.windowMain.winfo_screenheight()
+        # gw.windowMain.minsize(int(screen_width*.8), int(screen_height*.9))
+        #set window size to a bit less than full screen
+        gw.windowMain.geometry(str(int(screen_width*.95)) + "x" + str(int(screen_height*.95)))
+        #set window position
+        gw.windowMain.geometry("+%d+%d" % (screen_width*0.02, screen_height*0.02))
     gw.windowMain.configure(bg='#52837D')
 
-    if gw.kiosk_mode:
-        print (f"trying to swtich to full screen mode... {gw.kiosk_mode}")
-        gw.windowMain.attributes("-fullscreen", True)
+    
    
     # Instructions text
     if gw.useS3:  QR_download_text = " Scan the QR to download."  # only show this is the QR for downloading is being displayed.
