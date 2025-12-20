@@ -1212,7 +1212,9 @@ def parseCommandLineArgs():
         logger.debug("Debug level set to show prompts and response JSON")
 
     # set S3 use or not
-    if args.use_s3: rtn.useS3 = True
+    if args.use_s3: 
+        print ("using S3 and QR codes*******************************************")
+        rtn.useS3 = True
     else:           rtn.useS3 = False
 
 
