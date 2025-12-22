@@ -80,7 +80,6 @@ Specific to Raspberry Pi:
 
         2a. for RPi version 3 install these
             sudo apt-get install portaudio19-dev
-
             On the 2023-10-10 64 bit Raspbian OS you don't need to install these
             #sudo apt-get install libasound2-dev
             #sudo apt-get install libatlas-base-dev
@@ -142,7 +141,7 @@ v 0.5 Initial version
 v 0.6 2023-11-12 inverted Go Button logic so it is active low (pulled to ground)
 v 0.7 updated to python 3.12 and openAI 1.0.0 (wow that was a pain)
       BE SURE to read updated install instructions above
-v 1.2 Added capability to store images created in teh AWS S3 cloud and display a QR code to them for instant download
+v 1.2 Added capability to store images created in the AWS S3 cloud and display a QR code to them for instant download
 """
 
 # import common libraries
@@ -688,8 +687,7 @@ def getImageURL(phrase):
             responseImage = client.images.generate(
                 prompt= prompt,
                 n=4,
-                size="512x512"
-                )
+                size="512x512")
         except Exception as e:
             print("\n\n\n")
             print(e)
@@ -768,8 +766,6 @@ def postProcessImages(imageURLs, imageModifiers, keywords, timestr, filePrefix):
     # save the combined image
     newFileName = "history/" + filePrefix + timestr + "-image" + ".png"
     new_im.save(newFileName)
-    
-    # Maybe Upload to S3
 
     return newFileName
 
@@ -826,7 +822,6 @@ def create_main_window(usingHardwareButton):
     
     gw.windowMain.configure(bg='#52837D')
     if gw.kiosk_mode:
-        print("Mike - in kiosk mode. trying to set main window to full screen")
         import time
         time.sleep(.5)
         gw.windowMain.attributes("-fullscreen", True)
@@ -923,15 +918,15 @@ def create_main_window(usingHardwareButton):
 
     
     # set up the grid
-    gw.windowMain.grid_columnconfigure(0, weight=99, minsize=0)     # left of image - boarder space
-    gw.windowMain.grid_columnconfigure(1, weight=99, minsize=10)    # left of image
-    gw.windowMain.grid_columnconfigure(2, weight=2,  minsize=100)   # left of image
-    gw.windowMain.grid_columnconfigure(3, weight=2,  minsize=100)   # left of image
-    gw.windowMain.grid_columnconfigure(4, weight=99, minsize=10)    # 
+    gw.windowMain.grid_columnconfigure(0, weight=99, minsize=0)
+    gw.windowMain.grid_columnconfigure(1, weight=99, minsize=10)
+    gw.windowMain.grid_columnconfigure(2, weight=2,  minsize=100)
+    gw.windowMain.grid_columnconfigure(3, weight=2,  minsize=100)
+    gw.windowMain.grid_columnconfigure(4, weight=99, minsize=10)
     gw.windowMain.grid_columnconfigure(5, weight=99, minsize=10)
     gw.windowMain.grid_columnconfigure(6, weight=1)
     gw.windowMain.grid_columnconfigure(7, weight=99, minsize=10)
- 
+
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
     if gw.useS3: 
@@ -946,9 +941,6 @@ def create_main_window(usingHardwareButton):
     labelCreditsText.grid(row=2, column=1, columnspan=4, padx=0,       pady=10, sticky=tk.W)
     buttonQuit.grid(      row=3, column=2, columnspan=3, padx=0,       pady=20, sticky=tk.E)
     labelCommandHint.grid(row=4, column=0, columnspan=3, padx=10,      pady=10, sticky=tk.W)
-
-
-
 
     if usingHardwareButton:
         # remove button from the window
@@ -1182,8 +1174,6 @@ def display_image(image_path, label=None, labelQR = None):
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
-            #if gw.single_image:
-            #    labelQR.place(x=label.winfo_x(), y =label.winfo_y())
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
             update_main_window()
@@ -1225,7 +1215,6 @@ def parseCommandLineArgs():
 
     # parse the command line arguments
     parser = argparse.ArgumentParser()
-
     parser.add_argument("-s", "--savefiles", help="save the files", action="store_true") # optional argument
     parser.add_argument("-d", "--debug", help="0:info, 1:prompts, 2:responses", type=int) # optional argument
     parser.add_argument("-w", "--wav", help="use audio from file", type=str, default=0) # optional argument
@@ -1237,7 +1226,6 @@ def parseCommandLineArgs():
     parser.add_argument("-g", "--gokiosk", help="jump into Kiosk mode", action="store_true") # optional argument
     parser.add_argument("-q", "--use_s3", help = "try to store image files to AWS S3, and generate QRcodes", action="store_true")
     parser.add_argument("-m", "--mono_image", help = "create a single, large image using dall-e-3", action="store_true")
-    
     args = parser.parse_args()
 
     # set the debug level
@@ -1294,7 +1282,6 @@ def parseCommandLineArgs():
             rtn.nextProcessStep = processStep.UseAudioFile
             rtn.inputFileName = args.wav
 
-
         # if set, then record only 10 seconds of audio and use that for the keywords
         rtn.isAudioKeywords = False
         if args.onlykeywords:
@@ -1304,8 +1291,6 @@ def parseCommandLineArgs():
         rtn.isSaveFiles = False
         if args.savefiles:
             rtn.isSaveFiles = True
-
-
 
     return rtn
 
@@ -1480,7 +1465,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
         # use the keywords to generate images
         try:
             imagesInfo = getImageURL(keywords)
-            print (imagesInfo)
+
             imageURLs = imagesInfo[0]
             imageModifiers = imagesInfo[1]
 
@@ -1494,7 +1479,6 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
 
             if gw.useS3:
                  result = upload_to_s3_and_generate_qr( file_path = newImageFileName, S3_dir= "idleDisplayFiles")
-
 
             changeBlinkRate(BLINK_STOP)
             nextProcessStep = processStep.DisplayImage  
@@ -1530,7 +1514,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
         logger.info("Displaying image...")
 
         try:
-            display_image(newImageFileName, labelForImageDisplay, labelQRForImage)  # mike
+            display_image(newImageFileName, labelForImageDisplay, labelQRForImage)
             display_text_in_message_window() # Hide the message window
         except Exception as e:
             logger.error("Error displaying image: " + newImageFileName, exc_info=True)

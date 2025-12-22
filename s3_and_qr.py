@@ -17,7 +17,7 @@ def upload_to_s3_and_generate_qr(file_path,
     """
     #open json file and get AWS credentials and bucket info
     try:
-        with open("s3_info-mike.json", 'r') as file:
+        with open("s3_info-user.json", 'r') as file:
             data = json.load(file)
             bucket_name = data["S3_BUCKET"]
     except FileNotFoundError:

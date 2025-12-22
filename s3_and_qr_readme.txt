@@ -35,7 +35,7 @@ to do three things:
                 }
         - Click Save changes. You'll see a warning that the bucket is now public
 
-3. set up a key pair for that is used to access the account when writing the files
+3. Set up a key pair for that is used to access the account when writing the files
     - In the navigation pane, choose Users, and then select the desired user or create a new one.
     - On the user's summary page, select the Security credentials tab.
     - In the Access keys section, choose Create access key.
@@ -44,6 +44,10 @@ to do three things:
       them directly from the console. 
       Important: This is the only time you can view the secret key, so store it securely.
 
+4. Set up the permissions file
+    - open the file s3_info.json
+    - add your access key, secret accessky, region, and s3 bucket
+    - save this file with a new name- s3_info-user.json
 
 
 
