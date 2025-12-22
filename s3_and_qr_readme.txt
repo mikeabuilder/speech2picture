@@ -36,6 +36,13 @@ to do three things:
         - Click Save changes. You'll see a warning that the bucket is now public
 
 3. set up a key pair for that is used to access the account when writing the files
+    - In the navigation pane, choose Users, and then select the desired user or create a new one.
+    - On the user's summary page, select the Security credentials tab.
+    - In the Access keys section, choose Create access key.
+    - Select the relevant use case (e.g., "Other") and follow the prompts.
+    - Download the .csv file containing the Access key ID and Secret access key, or copy 
+      them directly from the console. 
+      Important: This is the only time you can view the secret key, so store it securely.
 
 
 

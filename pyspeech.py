@@ -935,7 +935,10 @@ def create_main_window(usingHardwareButton):
     labelTextLong.grid(   row=0, column=1, columnspan=4, padx=(0,0),            sticky=tk.EW)
     labelForImage.grid(   row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NSEW)
     if gw.useS3: 
-        labelQRForImage.grid( row=0, column=6, rowspan=5,    padx=(0,0),   pady=10)
+        if gw.single_image:
+            labelQRForImage.grid( row=0, column=6, rowspan=5,    padx=(0,0),   pady=10, sticky=tk.NW)
+        else:
+            labelQRForImage.grid( row=0, column=6, rowspan=5,    padx=(0,0),   pady=10)
     
 
     labelQR.grid(         row=1, column=2,               padx=(0,10),  pady=10, sticky=tk.NSEW)
@@ -1179,8 +1182,8 @@ def display_image(image_path, label=None, labelQR = None):
             # conver to photoImage
             QR_photo = ImageTk.PhotoImage(QRimg)
             labelQR.configure(image = QR_photo)
-            if gw.single_image:
-                labelQR.place(x=label.winfo_x(), y =label.winfo_y())
+            #if gw.single_image:
+            #    labelQR.place(x=label.winfo_x(), y =label.winfo_y())
             labelQR.image = QR_photo  # keep a reference to prevent garbage collection
 
             update_main_window()
@@ -1270,10 +1273,11 @@ def parseCommandLineArgs():
         rtn.nextProcessStep = processStep.NoneSpecified
         rtn.kiosk_mode = True
     else:
+        rtn.kiosk_mode = False
+
         # if we're given a file via the command line then start at that step
         # check in reverse order so that processStartStep will be the latest step for any set of arguments
         rtn.nextProcessStep = processStep.NoneSpecified
-        rtn.kiosk_mode = False
         if args.image != 0: 
             rtn.nextProcessStep = processStep.UseImageFile
             rtn.inputFileName = args.image
@@ -1476,7 +1480,7 @@ def audioToPicture(settings, labelForImageDisplay, labelForMessageDisplay, label
         # use the keywords to generate images
         try:
             imagesInfo = getImageURL(keywords)
-
+            print (imagesInfo)
             imageURLs = imagesInfo[0]
             imageModifiers = imagesInfo[1]
 
